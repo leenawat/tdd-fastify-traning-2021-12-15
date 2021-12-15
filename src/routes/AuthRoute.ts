@@ -21,6 +21,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         reply.code(403)
         return {
           status: 403,
+          message: 'Account is inactive',
         }
       }
     }

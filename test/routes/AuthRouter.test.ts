@@ -83,4 +83,10 @@ describe('Authentication', () => {
     const response = await postAuthentication(credentials)
     expect(response.statusCode).toBe(403)
   })
+
+  it('returns \"Account is inactive\" when authentication fails for inactive account', async () => {
+    await addUser({ ...activeUser, inactive: 1 })
+    const response = await postAuthentication(credentials)
+    expect(response.json().message).toBe('Account is inactive')
+  })
 })
