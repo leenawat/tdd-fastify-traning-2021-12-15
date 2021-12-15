@@ -1,4 +1,12 @@
 {
     "my-env": "test",
-    "server-port": 3000
+    "server-port": 3000,
+    "database": {
+        "client": "mysql2",
+        "port": 3306,
+        "host": "localhost",
+        "user": "root",
+        "password": "password",
+        "database": "db-test"
+    }
 }
