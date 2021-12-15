@@ -52,5 +52,20 @@ describe('user tests', () => {
     const response = await postUserRegister()
     expect(response.json().message).toBe('username in use')
   })
+
+  it('creates user in inactive mode', async () => {
+    await postUserRegister()
+    const users = await db(TABLE_NAME).select()
+    const savedUser = users[0]
+    expect(savedUser.inactive).toBe(1)
+  })
+
+  it('creates user in inactive mode even the request body contains inactive as false', async () => {
+    const newUser = { ...validUser, inactive: 0 }
+    await postUserRegister(newUser)
+    const users = await db(TABLE_NAME).select()
+    const savedUser = users[0]
+    expect(savedUser.inactive).toBe(1)
+  })
 })
 

@@ -8,6 +8,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.post('/api/users', async function (request, reply) {
     const data: any = request.body
     data.password = await bcrypt.hashSync(data.password)
+    data.inactive = 1
     try {
       const user = await userModel.findByUsername(data.username)
       if (user.length > 0) {
