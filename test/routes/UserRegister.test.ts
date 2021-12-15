@@ -28,5 +28,10 @@ describe('user tests', () => {
     const res = await postUserRegister()
     expect(res.statusCode).toBe(201)
   })
+
+  it('returns "User created" when register request is valid', async () => {
+    const response = await postUserRegister()
+    expect(response.json().message).toBe('User created')
+  })
 })
 
