@@ -70,4 +70,11 @@ describe('Authentication', () => {
     const decoded = jwt.decode(response.json().token)
     expect(decoded).not.toBeNull()
   })
+
+  it('decoded token มี key ชื่อว่า \"exp\"', async () => {
+    await addUser()
+    const response = await postAuthentication(credentials)
+    const decoded = jwt.decode(response.json().token)
+    expect('exp' in decoded).toBeTruthy()
+  })
 })
