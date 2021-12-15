@@ -77,4 +77,10 @@ describe('Authentication', () => {
     const decoded = jwt.decode(response.json().token)
     expect('exp' in decoded).toBeTruthy()
   })
+
+  it('returns 403 when logging in with an inactive account', async () => {
+    await addUser({ ...activeUser, inactive: 1 })
+    const response = await postAuthentication(credentials)
+    expect(response.statusCode).toBe(403)
+  })
 })
