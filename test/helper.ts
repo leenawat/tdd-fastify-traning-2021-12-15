@@ -2,7 +2,7 @@
 import Fastify from 'fastify'
 import fp from 'fastify-plugin'
 import App from '../src/app'
-import * as tap from 'tap';
+import * as tap from 'tap'
 
 export type Test = typeof tap['Test']['prototype'];
 
@@ -21,7 +21,7 @@ async function build (t: Test) {
   // different from the production setup
   void app.register(fp(App), await config())
 
-  await app.ready();
+  await app.ready()
 
   // Tear down our app after we are done
   t.teardown(() => void app.close())
@@ -31,5 +31,5 @@ async function build (t: Test) {
 
 export {
   config,
-  build
+  build,
 }
