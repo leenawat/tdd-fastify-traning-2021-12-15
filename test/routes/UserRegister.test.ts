@@ -39,5 +39,12 @@ describe('user tests', () => {
     const userList = await db(TABLE_NAME).select()
     expect(userList.length).toBe(1)
   })
+
+  it('hashes the password in database', async () => {
+    await postUserRegister()
+    const userList = await db(TABLE_NAME).select()
+    const savedUser = userList[0]
+    expect(savedUser.password).not.toBe('P4ssword')
+  })
 })
 
