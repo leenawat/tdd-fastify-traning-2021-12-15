@@ -10,7 +10,8 @@
     "test": "npm run build:ts && tsc -p test/tsconfig.json && tap --ts test/**/*.test.ts",
     "start": "npm run build:ts && fastify start -l info dist/app.js",
     "build:ts": "tsc",
-    "dev": "nodemon",
+    "dev": "cross-env NODE_ENV=develop nodemon",
+    "dev:test": "cross-env NODE_ENV=test nodemon",
     "lint": "eslint --fix {src,test}/**/*.ts"
   },
   "keywords": [],
@@ -29,6 +30,8 @@
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "concurrently": "^6.0.0",
+    "config": "^3.3.6",
+    "cross-env": "^7.0.3",
     "eslint": "^8.4.1",
     "fastify-tsconfig": "^1.0.1",
     "nodemon": "^2.0.15",
