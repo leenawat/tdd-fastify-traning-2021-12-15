@@ -48,4 +48,10 @@ describe('Authentication', () => {
     const response = await postAuthentication({ username: 'leenawat', password: 'password' })
     expect(response.statusCode).toBe(401)
   })
+
+  it('returns \"Incorrect credentials\" when authentication fails', async () => {
+    await addUser()
+    const response = await postAuthentication({ username: 'leenawat', password: 'password' })
+    expect(response.json().message).toBe('Incorrect credentials')
+  })
 })

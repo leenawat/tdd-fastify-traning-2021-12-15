@@ -14,7 +14,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       reply.code(401)
       return {
         status: 401,
-        message: 'authentication_failure',
+        message: 'Incorrect credentials',
       }
     }
     const match = await bcrypt.compareSync(password, user.password)
@@ -22,7 +22,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       reply.code(401)
       return {
         status: 401,
-        message: 'authentication_failure',
+        message: 'Incorrect credentials',
       }
     }
 
