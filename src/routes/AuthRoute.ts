@@ -9,9 +9,10 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     schema: {
       body: {
         type: 'object',
-        required: ['username'],
+        required: ['username', 'password'],
         properties: {
           username: { type: 'string' },
+          password: { type: 'string' },
         },
       },
     },
