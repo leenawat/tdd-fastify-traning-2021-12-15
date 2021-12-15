@@ -42,4 +42,10 @@ describe('Authentication', () => {
     const response = await postAuthentication(credentials)
     expect(response.statusCode).toBe(401)
   })
+
+  it('returns 401 when password is wrong', async () => {
+    await addUser()
+    const response = await postAuthentication({ username: 'leenawat', password: 'password' })
+    expect(response.statusCode).toBe(401)
+  })
 })
