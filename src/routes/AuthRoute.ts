@@ -26,7 +26,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       }
     }
 
-    reply.send()
+    reply.send({ uid: user.uid, username: user.username, token: 'zzz' })
   })
 }
 export default auth

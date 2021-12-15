@@ -54,4 +54,12 @@ describe('Authentication', () => {
     const response = await postAuthentication({ username: 'leenawat', password: 'password' })
     expect(response.json().message).toBe('Incorrect credentials')
   })
+
+  it('returns uid, username and token when login success', async () => {
+    const id:any = await addUser()
+    const response = await postAuthentication(credentials)
+    expect(response.json().uid).toBe(id[0])
+    expect(response.json().username).toBe(activeUser.username)
+    expect(Object.keys(response.json())).toEqual(['uid', 'username', 'token'])
+  })
 })
