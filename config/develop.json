@@ -8,5 +8,8 @@
         "user": "root",
         "password": "password",
         "database": "db-develop"
+    },
+    "jwt": {
+        "secret": "superscretkey"
     }
 }

@@ -1,6 +1,7 @@
 import { build } from '../helper'
 import db from '../../src/config/database'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 const app = build()
 const TABLE_NAME = 'sys_user'
@@ -61,5 +62,12 @@ describe('Authentication', () => {
     expect(response.json().uid).toBe(id[0])
     expect(response.json().username).toBe(activeUser.username)
     expect(Object.keys(response.json())).toEqual(['uid', 'username', 'token'])
+  })
+
+  it('returns valid token when login success', async () => {
+    await addUser()
+    const response = await postAuthentication(credentials)
+    const decoded = jwt.decode(response.json().token)
+    expect(decoded).not.toBeNull()
   })
 })

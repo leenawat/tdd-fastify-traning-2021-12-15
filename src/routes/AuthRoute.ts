@@ -25,8 +25,8 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         message: 'Incorrect credentials',
       }
     }
-
-    reply.send({ uid: user.uid, username: user.username, token: 'zzz' })
+    const token = await fastify.jwt.sign({ uid: user.uid })
+    reply.send({ uid: user.uid, username: user.username, token })
   })
 }
 export default auth

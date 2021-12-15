@@ -6,4 +6,8 @@ declare module 'fastify' {
     interface FastifyInstance {
         db: Knex;
     }
+
+    interface FastifyRequest {
+        jwtVerify: any;
+    }
 }
