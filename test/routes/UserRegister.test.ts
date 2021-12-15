@@ -33,5 +33,11 @@ describe('user tests', () => {
     const response = await postUserRegister()
     expect(response.json().message).toBe('User created')
   })
+
+  it('saves the user to database', async () => {
+    await postUserRegister()
+    const userList = await db(TABLE_NAME).select()
+    expect(userList.length).toBe(1)
+  })
 })
 
