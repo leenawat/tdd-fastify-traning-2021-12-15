@@ -37,4 +37,9 @@ describe('Authentication', () => {
     const response = await postAuthentication(credentials)
     expect(response.statusCode).toBe(200)
   })
+
+  it('returns 401 when user does not exist', async () => {
+    const response = await postAuthentication(credentials)
+    expect(response.statusCode).toBe(401)
+  })
 })
