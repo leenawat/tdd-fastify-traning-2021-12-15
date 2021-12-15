@@ -1,11 +1,10 @@
-import { test } from 'tap'
 import { build } from '../helper'
-
-test('default root route', async (t) => {
-  const app = await build(t)
-
-  const res = await app.inject({
-    url: '/',
+describe('root tests', () => {
+  const app = build()
+  it('default root route', async () => {
+    const res = await app.inject({
+      url: '/',
+    })
+    expect(JSON.parse(res.payload)).toEqual({ root: true })
   })
-  t.same(JSON.parse(res.payload), { root: true })
 })
