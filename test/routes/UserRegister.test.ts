@@ -46,5 +46,11 @@ describe('user tests', () => {
     const savedUser = userList[0]
     expect(savedUser.password).not.toBe('P4ssword')
   })
+
+  it(`returns "username in use" when same username is already in use`, async () => {
+    await db(TABLE_NAME).insert({ ...validUser })
+    const response = await postUserRegister()
+    expect(response.json().message).toBe('username in use')
+  })
 })
 

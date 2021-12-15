@@ -8,7 +8,24 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.post('/api/users', async function (request, reply) {
     const data: any = request.body
     data.password = await bcrypt.hashSync(data.password)
-    await userModel.save(data)
+    try {
+      const user = await userModel.findByUsername(data.username)
+      if (user.length > 0) {
+        return {
+          path: request.url,
+          timestamp: new Date(),
+          message: 'username in use',
+        }
+      }
+      await userModel.save(data)
+    } catch (err) {
+      fastify.log.error(err)
+      return {
+        path: request.url,
+        timestamp: new Date(),
+        err,
+      }
+    }
     reply.code(201)
     return { message: 'User created' }
   })

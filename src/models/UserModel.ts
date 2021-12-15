@@ -14,4 +14,10 @@ export default class UserModel {
       .returning('uid')
       .insert(data)
   }
+
+  async findByUsername(username) {
+    return await this.db(this.TABLE_NAME)
+      .select()
+      .where({ username })
+  }
 }
