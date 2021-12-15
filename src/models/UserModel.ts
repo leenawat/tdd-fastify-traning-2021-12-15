@@ -19,5 +19,6 @@ export default class UserModel {
     return await this.db(this.TABLE_NAME)
       .select()
       .where({ username })
+      .first()
   }
 }
