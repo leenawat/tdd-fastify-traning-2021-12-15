@@ -89,4 +89,9 @@ describe('Authentication', () => {
     const response = await postAuthentication(credentials)
     expect(response.json().message).toBe('Account is inactive')
   })
+
+  it('returns 401 when username is not valid', async () => {
+    const response = await postAuthentication({ password: 'P4ssword' })
+    expect(response.statusCode).toBe(401)
+  })
 })

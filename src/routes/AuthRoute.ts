@@ -5,10 +5,29 @@ import bcrypt from 'bcryptjs'
 const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   const userModel = new UserModel(fastify.db)
 
-  fastify.post('/api/auth', async function (request, reply) {
-    const body:any = request.body
+  fastify.post('/api/auth', {
+    schema: {
+      body: {
+        type: 'object',
+        required: ['username'],
+        properties: {
+          username: { type: 'string' },
+        },
+      },
+    },
+    attachValidation: true,
+  }, async function (request, reply) {
+    if (request.validationError) {
+      // `request.validationError.validation` contains the raw validation error
+      reply.code(401).send({
+        status: 401,
+        message: 'Incorrect credentials',
+      })
+    }
+
+    const body: any = request.body
     const { username, password } = body
-    const user:any = await userModel.findByUsername(username)
+    const user: any = await userModel.findByUsername(username)
 
     if (!user) {
       reply.code(401)
