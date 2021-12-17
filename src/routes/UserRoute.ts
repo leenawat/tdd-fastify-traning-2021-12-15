@@ -11,7 +11,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     data.inactive = 1
     try {
       const user = await userModel.findByUsername(data.username)
-      if (user.length > 0) {
+      if (user) {
         return {
           path: request.url,
           timestamp: new Date(),
