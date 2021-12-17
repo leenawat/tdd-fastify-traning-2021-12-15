@@ -22,15 +22,16 @@ export default class UserModel {
       .first()
   }
   async find(page = 0, size = 10) {
-    const userList = await this.db(this.TABLE_NAME)
-      .select()
+    const getModel = () => this.db(this.TABLE_NAME)
       .offset(page * size)
       .limit(size)
+    const totalcount:any = await getModel().count()
+    const content = await getModel().select()
     return {
-      content: userList,
+      content,
       page,
       size,
-      totalPages: Math.ceil(userList.length / size),
+      totalPages: Math.ceil(totalcount[0]['count'] / size),
     }
   }
 }
