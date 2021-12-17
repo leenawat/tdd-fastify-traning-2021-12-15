@@ -71,4 +71,10 @@ describe('Listing Users', () => {
     const response = await getUsers(credentials)
     expect(Object.keys(response.json())).toEqual(['content', 'page', 'size', 'totalPages'])
   })
+
+  it('returns 10 users in page content when there are 11 users in database', async () => {
+    await addUser(11)
+    const response = await getUsers(credentials)
+    expect(response.json().content.length).toBe(10)
+  })
 })
