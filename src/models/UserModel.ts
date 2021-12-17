@@ -21,4 +21,16 @@ export default class UserModel {
       .where({ username })
       .first()
   }
+  async find(page = 0, size = 10) {
+    const userList = await this.db(this.TABLE_NAME)
+      .select()
+      .offset(size)
+      .limit(page * size)
+    return {
+      content: userList,
+      page,
+      size,
+      totalPages: Math.ceil(userList.length / size),
+    }
+  }
 }

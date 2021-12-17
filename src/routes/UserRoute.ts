@@ -34,7 +34,11 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.get('/api/users', {
     preValidation: [fastify.authenticate],
   }, async function (request, reply) {
-    reply.code(200).send()
+    const query:any = request.query
+    const { page, size } = query
+    const userPage = await userModel.find(page, size)
+    reply.code(200)
+    return userPage
   })
 }
 

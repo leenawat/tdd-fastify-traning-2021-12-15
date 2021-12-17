@@ -4,19 +4,28 @@ import bcrypt from 'bcryptjs'
 
 const app = build()
 const TABLE_NAME = 'sys_user'
-const credentials = { username: 'leenawat', password: 'P4ssword' }
-const activeUser = {
-  'username': 'leenawat',
-  'password': 'P4ssword',
-  'prename': '1',
-  'fname': 'Leenawat',
-  'lname': 'Papahom',
-  'inactive': 0,
-}
+const credentials = { username: 'user1', password: 'P4ssword' }
+// const activeUser = {
+//   'username': 'user',
+//   'password': 'P4ssword',
+//   'prename': '1',
+//   'fname': 'user',
+//   'lname': 'Papahom',
+//   'inactive': 0,
+// }
 
-const addUser = async (user = { ...activeUser }) => {
-  user.password = await bcrypt.hashSync(user.password)
-  return await db(TABLE_NAME).insert(user)
+const addUser = async () => {
+  for (let i = 0; i < 10; i++) {
+    const hash = await bcrypt.hashSync('P4ssword')
+    await db(TABLE_NAME).insert({
+      username: `user${i + 1}`,
+      password: hash,
+      prename: '1',
+      fname: 'fname' + (i + 1),
+      lname: 'lname' + (i + 1),
+      inactive: 0,
+    })
+  }
 }
 
 const postAuthentication = async (credentials) => {
@@ -55,5 +64,16 @@ describe('Listing Users', () => {
       method: 'get',
     })
     expect(response.statusCode).toBe(401)
+  })
+
+  it('returns page object as response body', async () => {
+    await addUser()
+    const response = await getUsers(credentials)
+    expect(response.json()).toEqual({
+      content: [],
+      page: 0,
+      size: 10,
+      totalPages: 0,
+    })
   })
 })
