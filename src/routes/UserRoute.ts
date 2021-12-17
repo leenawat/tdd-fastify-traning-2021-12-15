@@ -31,7 +31,9 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     return { message: 'User created' }
   })
 
-  fastify.get('/api/users', async function (request, reply) {
+  fastify.get('/api/users', {
+    preValidation: [fastify.authenticate],
+  }, async function (request, reply) {
     reply.code(200).send()
   })
 }

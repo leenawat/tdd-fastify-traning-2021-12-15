@@ -48,4 +48,12 @@ describe('Listing Users', () => {
     const response = await getUsers(credentials)
     expect(response.statusCode).toBe(200)
   })
+
+  it('returns 401 when request wihtout Authorization header', async () => {
+    const response = await app.inject({
+      url: '/api/users',
+      method: 'get',
+    })
+    expect(response.statusCode).toBe(401)
+  })
 })
