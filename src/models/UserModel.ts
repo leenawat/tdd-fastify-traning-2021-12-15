@@ -31,7 +31,7 @@ export default class UserModel {
       content,
       page,
       size,
-      totalPages: Math.ceil(totalcount[0]['count'] / size),
+      totalPages: Math.ceil(totalcount[0]['count(*)'] / size),
     }
   }
 }

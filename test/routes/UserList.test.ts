@@ -77,4 +77,10 @@ describe('Listing Users', () => {
     const response = await getUsers(credentials)
     expect(response.json().content.length).toBe(10)
   })
+
+  it('returns 2 as totalPages when there are 11 users', async () => {
+    await addUser(11)
+    const response = await getUsers(credentials)
+    expect(response.json().totalPages).toBe(2)
+  })
 })
