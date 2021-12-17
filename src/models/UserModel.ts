@@ -24,8 +24,8 @@ export default class UserModel {
   async find(page = 0, size = 10) {
     const userList = await this.db(this.TABLE_NAME)
       .select()
-      .offset(size)
-      .limit(page * size)
+      .offset(page * size)
+      .limit(size)
     return {
       content: userList,
       page,
