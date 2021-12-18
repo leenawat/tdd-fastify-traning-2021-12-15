@@ -154,8 +154,13 @@ describe('Get User', () => {
     expect(response.statusCode).toBe(204)
   })
 
-  fit('return 200 เมื่อพบ user ตาม id ที่ค้นหา', async () => {
+  it('return 200 เมื่อพบ user ตาม id ที่ค้นหา', async () => {
     const response = await getUser(1)
     expect(response.statusCode).toBe(200)
+  })
+
+  it('return uid, username, prename, fname, lname and inactive in reponse body', async () => {
+    const response = await getUser(1)
+    expect(Object.keys(response.json())).toEqual(['uid', 'username', 'prename', 'fname', 'lname', 'inactive'])
   })
 })

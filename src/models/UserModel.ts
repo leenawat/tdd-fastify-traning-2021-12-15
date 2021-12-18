@@ -23,7 +23,7 @@ export default class UserModel {
   }
   async findById(id) {
     return await this.db(this.TABLE_NAME)
-      .select()
+      .select('uid', 'username', 'prename', 'fname', 'lname', 'inactive')
       .where({ uid: id })
       .first()
   }
@@ -34,7 +34,7 @@ export default class UserModel {
     const content = await getModel()
       .offset(page * size)
       .limit(size)
-      .select()
+      .select('uid', 'username', 'prename', 'fname', 'lname', 'inactive')
     return {
       content,
       page,
