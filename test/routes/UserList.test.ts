@@ -122,4 +122,12 @@ describe('Listing Users', () => {
     expect(response.statusCode).toBe(400)
     expect(response.json().message).toBe('querystring.size should be >= 1')
   })
+
+  it('returns "querystring.page should be number, querystring.size should be number" when page and size is not a number', async () => {
+    // limit size page to 100
+    await addUser(11)
+    const response = await getUsers(credentials, { query: { page: 'a', size: 'b' } })
+    expect(response.statusCode).toBe(400)
+    expect(response.json().message).toBe('querystring.page should be number, querystring.size should be number')
+  })
 })
