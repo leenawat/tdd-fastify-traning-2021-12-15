@@ -30,8 +30,22 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     reply.code(201)
     return { message: 'User created' }
   })
-
   fastify.get('/api/users', {
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          page: {
+            type: 'number',
+            default: 0,
+          },
+          size: {
+            type: 'number',
+            default: 10,
+          },
+        },
+      },
+    },
     preValidation: [fastify.authenticate],
   }, async function (request, reply) {
     const query:any = request.query

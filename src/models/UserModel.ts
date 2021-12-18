@@ -23,10 +23,11 @@ export default class UserModel {
   }
   async find(page = 0, size = 10) {
     const getModel = () => this.db(this.TABLE_NAME)
+    const totalcount:any = await getModel().count()
+    const content = await getModel()
       .offset(page * size)
       .limit(size)
-    const totalcount:any = await getModel().count()
-    const content = await getModel().select()
+      .select()
     return {
       content,
       page,

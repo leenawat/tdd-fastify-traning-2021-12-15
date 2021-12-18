@@ -36,14 +36,16 @@ const postAuthentication = async (credentials) => {
   })
 }
 
-const getUsers = async (options = {}) => {
+const getUsers = async (options = {}, opts:any = {}) => {
   const response = await postAuthentication(options)
+  const query = opts.query
   return await app.inject({
     url: '/api/users',
     method: 'get',
     headers: {
       Authorization: 'Bearer ' + response.json().token,
     },
+    query,
   })
 }
 
@@ -82,5 +84,12 @@ describe('Listing Users', () => {
     await addUser(11)
     const response = await getUsers(credentials)
     expect(response.json().totalPages).toBe(2)
+  })
+
+  it('returns second page users and page indicator when page is set as 1 in request parameter', async () => {
+    await addUser(11)
+    const response = await getUsers(credentials, { query: { page: 1 } })
+    expect(response.json().content[0].username).toBe('user11')
+    expect(response.json().page).toBe(1)
   })
 })
