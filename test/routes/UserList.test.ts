@@ -153,4 +153,9 @@ describe('Get User', () => {
     const response = await getUser()
     expect(response.statusCode).toBe(204)
   })
+
+  fit('return 200 เมื่อพบ user ตาม id ที่ค้นหา', async () => {
+    const response = await getUser(1)
+    expect(response.statusCode).toBe(200)
+  })
 })
