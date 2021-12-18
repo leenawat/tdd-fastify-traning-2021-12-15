@@ -115,7 +115,7 @@ describe('Listing Users', () => {
     expect(response.json().message).toBe('querystring.size should be <= 100')
   })
 
-  fit('returns "querystring.size should be >= 1" when size is set as 0 in request parameter', async () => {
+  it('returns "querystring.size should be >= 1" when size is set below 1 as request parameter', async () => {
     // limit size page to 100
     await addUser(11)
     const response = await getUsers(credentials, { query: { size: 0 } })
