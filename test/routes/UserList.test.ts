@@ -116,7 +116,6 @@ describe('Listing Users', () => {
   })
 
   it('returns "querystring.size should be >= 1" when size is set below 1 as request parameter', async () => {
-    // limit size page to 100
     await addUser(11)
     const response = await getUsers(credentials, { query: { size: 0 } })
     expect(response.statusCode).toBe(400)
@@ -124,7 +123,6 @@ describe('Listing Users', () => {
   })
 
   it('returns "querystring.page should be number, querystring.size should be number" when page and size is not a number', async () => {
-    // limit size page to 100
     await addUser(11)
     const response = await getUsers(credentials, { query: { page: 'a', size: 'b' } })
     expect(response.statusCode).toBe(400)
