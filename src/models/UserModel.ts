@@ -21,6 +21,13 @@ export default class UserModel {
       .where({ username })
       .first()
   }
+  async findById(id) {
+    return await this.db(this.TABLE_NAME)
+      .select()
+      .where({ uid: id })
+      .first()
+  }
+
   async find(page = 0, size = 10) {
     const getModel = () => this.db(this.TABLE_NAME)
     const totalcount:any = await getModel().count()

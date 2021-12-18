@@ -60,6 +60,14 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     reply.code(200)
     return userPage
   })
+
+  fastify.get('/api/users/:id', async (request, reply) => {
+    const params:any = request.params
+    const user = await userModel.findById(params.id)
+    if (!user) {
+      reply.code(204).send()
+    }
+  })
 }
 
 export default user

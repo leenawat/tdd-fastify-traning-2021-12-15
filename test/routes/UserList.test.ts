@@ -129,3 +129,28 @@ describe('Listing Users', () => {
     expect(response.json().message).toBe('querystring/page should be number, querystring/size should be number')
   })
 })
+
+describe('Get User', () => {
+  let token = ''
+  const getUser = async (id = 5) => {
+    return await app.inject({
+      url: '/api/users/' + id,
+      method: 'get',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+  }
+
+  beforeEach(async () => {
+    await db(TABLE_NAME).truncate()
+    await addUser(1)
+    const response = await postAuthentication(credentials)
+    token = response.json().token
+  })
+
+  it('returns 204 when user not found', async() => {
+    const response = await getUser()
+    expect(response.statusCode).toBe(204)
+  })
+})
