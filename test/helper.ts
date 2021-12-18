@@ -5,8 +5,12 @@ export function build() {
   const opts = {
     ajv: {
       customOptions: {
+        jsonPointers: true,
         allErrors: true,
       },
+      plugins: [
+        require('ajv-errors'),
+      ],
     },
   }
   const app = fastify(opts)

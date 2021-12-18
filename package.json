@@ -21,6 +21,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ajv-errors": "^1.0.1",
     "bcryptjs": "^2.4.3",
     "fastify": "^3.0.0",
     "fastify-autoload": "^3.3.1",

@@ -39,6 +39,9 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             type: 'number',
             default: 0,
             minimum: 0,
+            errorMessage: {
+              minimum: 'ต้องมีค่ามากกว่า หรือเท่ากับ 0',
+            },
           },
           size: {
             type: 'number',

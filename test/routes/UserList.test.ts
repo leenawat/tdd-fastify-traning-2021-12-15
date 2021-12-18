@@ -93,11 +93,11 @@ describe('Listing Users', () => {
     expect(response.json().page).toBe(1)
   })
 
-  it('return "querystring.page should be >= 0" when page is set below zero as request parameter', async () => {
+  it('return "querystring/page ต้องมีค่ามากกว่า หรือเท่ากับ 0" when page is set below zero as request parameter', async () => {
     await addUser(11)
     const response = await getUsers(credentials, { query: { page: -1 } })
     expect(response.statusCode).toBe(400)
-    expect(response.json().message).toBe('querystring.page should be >= 0')
+    expect(response.json().message).toBe('querystring/page ต้องมีค่ามากกว่า หรือเท่ากับ 0')
   })
 
   it('returns 5 users and corresponding size indicator when size is set as 5 in request parameter', async () => {
@@ -107,25 +107,25 @@ describe('Listing Users', () => {
     expect(response.json().size).toBe(5)
   })
 
-  it('returns "querystring.size should be <= 100" when size is set as 101 in request parameter', async () => {
+  it('returns "querystring/size should be <= 100" when size is set as 101 in request parameter', async () => {
     // limit size page to 100
     await addUser(11)
     const response = await getUsers(credentials, { query: { size: 101 } })
     expect(response.statusCode).toBe(400)
-    expect(response.json().message).toBe('querystring.size should be <= 100')
+    expect(response.json().message).toBe('querystring/size should be <= 100')
   })
 
-  it('returns "querystring.size should be >= 1" when size is set below 1 as request parameter', async () => {
+  it('returns "querystring/size should be >= 1" when size is set below 1 as request parameter', async () => {
     await addUser(11)
     const response = await getUsers(credentials, { query: { size: 0 } })
     expect(response.statusCode).toBe(400)
-    expect(response.json().message).toBe('querystring.size should be >= 1')
+    expect(response.json().message).toBe('querystring/size should be >= 1')
   })
 
-  it('returns "querystring.page should be number, querystring.size should be number" when page and size is not a number', async () => {
+  it('returns "querystring/page should be number, querystring/size should be number" when page and size is not a number', async () => {
     await addUser(11)
     const response = await getUsers(credentials, { query: { page: 'a', size: 'b' } })
     expect(response.statusCode).toBe(400)
-    expect(response.json().message).toBe('querystring.page should be number, querystring.size should be number')
+    expect(response.json().message).toBe('querystring/page should be number, querystring/size should be number')
   })
 })
