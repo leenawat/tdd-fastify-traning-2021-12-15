@@ -106,4 +106,12 @@ describe('Listing Users', () => {
     expect(response.json().content.length).toBe(5)
     expect(response.json().size).toBe(5)
   })
+
+  fit('returns 400 when size is set as 101 in request parameter', async () => {
+    // limit size page to 100
+    await addUser(11)
+    const response = await getUsers(credentials, { query: { size: 101 } })
+    expect(response.statusCode).toBe(400)
+    expect(response.json().message).toBe('querystring.size should be <= 100')
+  })
 })
