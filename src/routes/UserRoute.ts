@@ -38,7 +38,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
           page: {
             type: 'number',
             default: 0,
-            min: 0,
+            minimum: 0,
           },
           size: {
             type: 'number',

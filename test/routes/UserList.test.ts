@@ -93,11 +93,11 @@ describe('Listing Users', () => {
     expect(response.json().page).toBe(1)
   })
 
-  it('returns "A non-negative integer must be provided to offset." when page is set below zero as request parameter', async () => {
+  it('return "querystring.page should be >= 0" when page is set below zero as request parameter', async () => {
     await addUser(11)
     const response = await getUsers(credentials, { query: { page: -1 } })
-    expect(response.statusCode).toBe(500)
-    expect(response.json().message).toBe('A non-negative integer must be provided to offset.')
+    expect(response.statusCode).toBe(400)
+    expect(response.json().message).toBe('querystring.page should be >= 0')
   })
 
   it('returns 5 users and corresponding size indicator when size is set as 5 in request parameter', async () => {
