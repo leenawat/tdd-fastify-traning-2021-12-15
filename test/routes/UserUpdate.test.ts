@@ -22,7 +22,7 @@ describe('User Update', () => {
     await db(TABLE_NAME).truncate()
   })
 
-  it('returns 401 when credentials are correct', async () => {
+  it('returns 401 when request without Authorization header', async () => {
     const user:any = await addUser()
     const response = await app.inject({
       url: '/api/users/' + user.uid,
