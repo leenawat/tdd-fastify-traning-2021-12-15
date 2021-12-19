@@ -55,7 +55,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     },
     preValidation: [fastify.authenticate],
   }, async function (request, reply) {
-    const query:any = request.query
+    const query: any = request.query
     const { page, size } = query
     const userPage = await userModel.find(page, size)
     reply.code(200)
@@ -63,13 +63,19 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   })
 
   fastify.get('/api/users/:id', async (request, reply) => {
-    const params:any = request.params
+    const params: any = request.params
     const user = await userModel.findById(params.id)
     if (!user) {
       reply.code(204).send()
     } else {
       reply.code(200).send(user)
     }
+  })
+
+  fastify.put('/api/users/:id', {
+    preValidation: [fastify.authenticate],
+  }, async (request, reply) => {
+    reply.code(200).send()
   })
 }
 
