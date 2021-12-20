@@ -16,8 +16,10 @@ const validUser = {
 
 const addUser = async (user = { ...validUser }) => {
   user.password = await bcrypt.hashSync(user.password)
-  return await db(TABLE_NAME).insert(user)
+  const result = await db(TABLE_NAME).insert(user)
+  return result[0] // return id primary for table sys_user
 }
+
 const postAuthentication = async (credentials = {}) => {
   return await app.inject({
     url: '/api/auth',
@@ -32,25 +34,25 @@ describe('User Update', () => {
   })
 
   it('returns 401 when request without Authorization header', async () => {
-    const user:any = await addUser()
+    const userId = await addUser()
     const response = await app.inject({
-      url: '/api/users/' + user.uid,
+      url: '/api/users/' + userId,
       method: 'put',
-      payload: user,
+      payload: {},
     })
     expect(response.statusCode).toBe(401)
   })
 
   it('returns 200 when request with Authorization header', async () => {
-    const user:any = await addUser()
+    const userId:any = await addUser()
     const responseToken = await postAuthentication(credentials)
     const response = await app.inject({
-      url: '/api/users/' + user.uid,
+      url: '/api/users/' + userId,
       method: 'put',
       headers: {
         Authorization: 'Bearer ' + responseToken.json().token,
       },
-      payload: user,
+      payload: validUser,
     })
     expect(response.statusCode).toBe(200)
   })
