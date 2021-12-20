@@ -78,7 +78,21 @@ describe('User Update', () => {
       },
       payload: {},
     })
-    // console.log(response.json())
     expect(response.statusCode).toBe(403)
+  })
+
+  it('returns 200 ok when valid update request sent from authorized user', async () => {
+    const userId = await addUser()
+    const validUpdate = { username: 'fname1-updated' }
+    const responseToken = await postAuthentication(credentials)
+    const response = await app.inject({
+      url: '/api/users/' + userId,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: validUpdate,
+    })
+    expect(response.statusCode).toBe(200)
   })
 })

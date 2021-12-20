@@ -46,4 +46,8 @@ export default class UserModel {
       totalPages: Math.ceil(totalcount[0]['count(*)'] / size),
     }
   }
+
+  async update(id, body) {
+    return this.db(this.TABLE_NAME).update(body).where({ uid: id })
+  }
 }

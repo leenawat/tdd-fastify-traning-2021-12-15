@@ -89,7 +89,8 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     if (!user || user.uid !== params.id) {
       return reply.code(403).send()
     }
-    reply.code(200).send()
+    const result = await userModel.update(params.id, request.body)
+    reply.code(200).send(result)
   })
 }
 
