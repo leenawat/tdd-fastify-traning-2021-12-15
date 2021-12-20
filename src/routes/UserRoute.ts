@@ -1,6 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 import UserModel from '../models/UserModel'
 import bcrypt from 'bcryptjs'
+import FileService from '../FileService'
 
 const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   const userModel = new UserModel(fastify.db)
@@ -86,10 +87,15 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   }, async (request, reply) => {
     const params:any = request.params
     const user:any = request.user
+    const updatedBody:any = request.body
     if (!user || user.uid !== params.id) {
       return reply.code(403).send()
     }
-    const result = await userModel.update(params.id, request.body)
+    if (updatedBody.image) {
+      updatedBody.image = await FileService.saveProfileImage(updatedBody.image)
+    }
+
+    const result = await userModel.update(params.id, updatedBody)
     reply.code(200).send(result)
   })
 }

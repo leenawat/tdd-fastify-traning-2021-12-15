@@ -1,6 +1,8 @@
 import { build } from '../helper'
 import db from '../../src/config/database'
 import bcrypt from 'bcryptjs'
+import path from 'path'
+import fs from 'fs'
 
 const app = build()
 const TABLE_NAME = 'sys_user'
@@ -12,6 +14,11 @@ const validUser = {
   'fname': 'Leenawat',
   'lname': 'Papahom',
   'inactive': 0,
+}
+
+const readFileAsBase64 = (file = 'test-png.png') => {
+  const filePath = path.join('.', 'test', 'resources', file)
+  return fs.readFileSync(filePath, { encoding: 'base64' })
 }
 
 const addUser = async (user = { ...validUser }) => {
@@ -106,5 +113,23 @@ describe('User Update', () => {
       payload: {},
     })
     expect(response.statusCode).toBe(403)
+  })
+
+  fit('saves the user image when update contains image as base64', async () => {
+    const fileInBase64 = readFileAsBase64()
+    const userId = await addUser()
+    const validUpdate = { username: 'user1-updated', image: fileInBase64 }
+    const responseToken = await postAuthentication(credentials)
+    await app.inject({
+      url: '/api/users/' + userId,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: validUpdate,
+    })
+
+    const inDBUser:any = await db(TABLE_NAME).select().where({ uid: userId }).first()
+    expect(inDBUser.image).toBeTruthy()
   })
 })

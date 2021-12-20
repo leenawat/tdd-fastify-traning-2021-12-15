@@ -48,6 +48,16 @@ export default class UserModel {
   }
 
   async update(id, body) {
-    return this.db(this.TABLE_NAME).update(body).where({ uid: id })
+    try {
+      const result = await this.db(this.TABLE_NAME).update(body).where({ uid: id })
+      return result
+    } catch (err:any) {
+      console.log({ err })
+      if (Object.keys(err).includes('sql')) {
+        return { err: 'SQL error' }
+      } else {
+        return { err }
+      }
+    }
   }
 }

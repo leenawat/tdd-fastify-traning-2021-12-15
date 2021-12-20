@@ -1,4 +1,4 @@
-import { createFolders } from '../src/FileService'
+import FileService from '../src/FileService'
 
 const fs = require('fs')
 const path = require('path')
@@ -10,11 +10,11 @@ const profileFolder = path.join('.', uploadDir, profileDir)
 
 describe('createFolders', () => {
   it('creates upload folder', () => {
-    createFolders()
+    FileService.createFolders()
     expect(fs.existsSync(uploadDir)).toBe(true)
   })
   it('creates profile folder under upload folder', () => {
-    createFolders()
+    FileService.createFolders()
     expect(fs.existsSync(profileFolder)).toBe(true)
   })
 })
