@@ -12,5 +12,6 @@
     "jwt": {
         "secret": "superscretkey"
     },
-    "upload-dir": "uploads-dev"
+    "upload-dir": "uploads-dev",
+    "profile-dir": "profile"
 }

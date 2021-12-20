@@ -20,7 +20,10 @@
   },
   "exclude": [
     "node_modules",
-    "test"
+    "test",
+    "uploads",
+    "uploads-dev",
+    "uploads-test",
   ],
   "include": ["src/**/*.ts"],
   "ts-node": {
