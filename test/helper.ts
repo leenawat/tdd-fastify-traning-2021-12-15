@@ -12,6 +12,7 @@ export function build() {
         require('ajv-errors'),
       ],
     },
+    bodyLimit: 3145728,
   }
   const app = fastify(opts)
   beforeAll(async () => {

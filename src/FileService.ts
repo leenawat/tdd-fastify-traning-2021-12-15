@@ -24,7 +24,11 @@ const saveProfileImage = async (base64File) => {
   return filename
 }
 
+const isLessThan2MB = (buffer) => {
+  return buffer.length < 2 * 1024 * 1024
+}
 export default {
   createFolders,
   saveProfileImage,
+  isLessThan2MB,
 }

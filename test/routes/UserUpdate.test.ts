@@ -160,4 +160,21 @@ describe('User Update', () => {
     const profileImagePath = path.join(profileFolder, inDBUser.image)
     expect(fs.existsSync(profileImagePath)).toBe(true)
   })
+
+  it('returns 413 when image size exceeds 2mb', async () => {
+    const fileWithExceeding2MB = 'a'.repeat(1024 * 1024 * 2) + 'a'
+    const base64 = Buffer.from(fileWithExceeding2MB).toString('base64')
+    const userId = await addUser()
+    const validUpdate = { username: 'user1-updated', image: base64 }
+    const responseToken = await postAuthentication(credentials)
+    const response = await app.inject({
+      url: '/api/users/' + userId,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: validUpdate,
+    })
+    expect(response.statusCode).toBe(413)
+  })
 })

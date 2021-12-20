@@ -92,6 +92,16 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       return reply.code(403).send()
     }
     if (updatedBody.image) {
+      const buffer = Buffer.from(updatedBody.image, 'base64')
+      if (!FileService.isLessThan2MB(buffer)) {
+        reply.code(413).send({
+          statusCode: 413,
+          code: 'FST_ERR_CTP_BODY_TOO_LARGE',
+          error: 'Payload Too Large',
+          message: 'image is too large, image should <= 2MB',
+        })
+      }
+
       updatedBody.image = await FileService.saveProfileImage(updatedBody.image)
     }
 
