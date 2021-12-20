@@ -11,5 +11,6 @@
     },
     "jwt": {
         "secret": "superscretkey"
-    }
+    },
+    "upload-dir": "uploads-dev"
 }
