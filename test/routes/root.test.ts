@@ -1,6 +1,8 @@
 import { build } from '../helper'
+
+const app = build()
+
 describe('root tests', () => {
-  const app = build()
   it('default root route', async () => {
     const res = await app.inject({
       url: '/',
