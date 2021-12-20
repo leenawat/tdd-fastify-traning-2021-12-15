@@ -22,8 +22,16 @@ export default fp(async (fastify: any, opts: any) => {
   fastify.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       await request.jwtVerify()
-    } catch (err) {
-      reply.send(err)
+    } catch (err:any) {
+      if (err.code === 'FAST_JWT_MALFORMED') {
+        reply.code(403).send({
+          statusCode: 403,
+          code: 'FAST_JWT_MALFORMED',
+          message: 'The token header is not a valid base64url serialized JSON.',
+        })
+      } else {
+        reply.send(err)
+      }
     }
   })
 })

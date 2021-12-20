@@ -95,4 +95,16 @@ describe('User Update', () => {
     })
     expect(response.statusCode).toBe(200)
   })
+
+  it('reutrns 403 when token is not valid', async () => {
+    const response = await app.inject({
+      url: '/api/users/1',
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer x.y.z',
+      },
+      payload: {},
+    })
+    expect(response.statusCode).toBe(403)
+  })
 })
