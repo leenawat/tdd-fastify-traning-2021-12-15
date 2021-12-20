@@ -99,4 +99,11 @@ describe('Authentication', () => {
     const response = await postAuthentication({ username: 'leenawat' })
     expect(response.statusCode).toBe(401)
   })
+
+  it('return "roles" in token when login success', async () => {
+    await addUser()
+    const response = await postAuthentication(credentials)
+    const decoded = jwt.decode(response.json().token)
+    expect('roles' in decoded).toBeTruthy()
+  })
 })

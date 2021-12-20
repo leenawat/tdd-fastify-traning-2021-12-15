@@ -53,7 +53,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         message: 'Incorrect credentials',
       }
     }
-    const token = await fastify.jwt.sign({ uid: user.uid }, { expiresIn: '10h' })
+    const token = await fastify.jwt.sign({ uid: user.uid, roles: [] }, { expiresIn: '10h' })
     reply.send({ uid: user.uid, username: user.username, token })
   })
 }
