@@ -65,4 +65,20 @@ describe('User Update', () => {
     })
     expect(response.json().message).toBe('Autorization header is missing!')
   })
+
+  it('returns 403 when update request is sent with correct credentials but for different user', async () => {
+    await addUser()
+    const userId2 = await addUser({ ...validUser, username: 'user2' })
+    const responseToken = await postAuthentication(credentials)
+    const response = await app.inject({
+      url: '/api/users/' + userId2,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: {},
+    })
+    // console.log(response.json())
+    expect(response.statusCode).toBe(403)
+  })
 })

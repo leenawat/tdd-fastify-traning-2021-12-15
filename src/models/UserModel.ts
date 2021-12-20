@@ -10,9 +10,13 @@ export default class UserModel {
   }
 
   async save(data: any) {
-    return await this.db(this.TABLE_NAME)
-      .returning('uid')
-      .insert(data)
+    try {
+      const result = await this.db(this.TABLE_NAME)
+        .insert(data)
+      return { id: result[0], ...data }
+    } catch (err) {
+      return { err: 'Save Data Error' }
+    }
   }
 
   async findByUsername(username) {

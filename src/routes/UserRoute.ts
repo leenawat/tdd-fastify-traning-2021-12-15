@@ -73,8 +73,22 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   })
 
   fastify.put('/api/users/:id', {
+    schema: {
+      params: {
+        type: 'object',
+        require: ['id'],
+        properties: {
+          id: { type: 'number' },
+        },
+      },
+    },
     preValidation: [fastify.authenticate],
   }, async (request, reply) => {
+    const params:any = request.params
+    const user:any = request.user
+    if (!user || user.uid !== params.id) {
+      return reply.code(403).send()
+    }
     reply.code(200).send()
   })
 }
