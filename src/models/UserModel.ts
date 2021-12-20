@@ -60,4 +60,11 @@ export default class UserModel {
       }
     }
   }
+
+  async findUserRoles(username: any) {
+    const result = await this.db('sys_user_role')
+      .join('sys_role', 'sys_user_role.role_id', '=', 'sys_role.id')
+      .select()
+    return result
+  }
 }

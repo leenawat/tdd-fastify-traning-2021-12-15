@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken'
 
 const app = build()
 const TABLE_NAME = 'sys_user'
+const SYS_USER_ROLE = 'sys_user_role'
+const SYS_ROLE = 'sys_role'
 const credentials = { username: 'leenawat', password: 'P4ssword' }
 const activeUser = {
   'username': 'leenawat',
@@ -20,6 +22,14 @@ const addUser = async (user = { ...activeUser }) => {
   return await db(TABLE_NAME).insert(user)
 }
 
+const addRole = async (roles: any[]) => {
+  return await db(SYS_ROLE).insert(roles)
+}
+
+const addUserRole = async (userRoles : any[]) => {
+  return await db(SYS_USER_ROLE).insert(userRoles)
+}
+
 const postAuthentication = async (credentials) => {
   return await app.inject({
     url: '/api/auth',
@@ -31,6 +41,8 @@ const postAuthentication = async (credentials) => {
 describe('Authentication', () => {
   beforeEach(async () => {
     await db(TABLE_NAME).truncate()
+    await db(SYS_ROLE).truncate()
+    await db(SYS_USER_ROLE).truncate()
   })
 
   it('returns 200 when credentials are correct', async () => {
@@ -105,5 +117,27 @@ describe('Authentication', () => {
     const response = await postAuthentication(credentials)
     const decoded = jwt.decode(response.json().token)
     expect('roles' in decoded).toBeTruthy()
+  })
+
+  it('roles in user token equal to sys_user_roles in database', async () => {
+    const userId = await addUser()
+    await addRole([{ name: 'admin' }, { name: 'user' }, { name: 'customer' }])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: userId[0], role_id: role.id,
+      }
+    })
+    const rolesName = rolesInDb.map(role => role.name)
+    await addUserRole(userRoles)
+    const response = await postAuthentication(credentials)
+    const decoded = jwt.decode(response.json().token)
+
+    // size equal and data equal
+    const result = decoded.roles.length === rolesName.length &&
+    decoded.roles.every(function (element) {
+      return rolesName.includes(element)
+    })
+    expect(result).toBeTruthy()
   })
 })
