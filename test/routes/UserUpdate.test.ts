@@ -4,6 +4,12 @@ import bcrypt from 'bcryptjs'
 import path from 'path'
 import fs from 'fs'
 
+const config = require('config')
+
+const uploadDir = config.get('upload-dir')
+const profileDir = config.get('profile-dir')
+const profileFolder = path.join('.', uploadDir, profileDir)
+
 const app = build()
 const TABLE_NAME = 'sys_user'
 const credentials = { username: 'leenawat', password: 'P4ssword' }
@@ -115,7 +121,8 @@ describe('User Update', () => {
     expect(response.statusCode).toBe(403)
   })
 
-  fit('saves the user image when update contains image as base64', async () => {
+  it('saves the user image when update contains image as base64', async () => {
+    // check from db
     const fileInBase64 = readFileAsBase64()
     const userId = await addUser()
     const validUpdate = { username: 'user1-updated', image: fileInBase64 }
@@ -131,5 +138,26 @@ describe('User Update', () => {
 
     const inDBUser:any = await db(TABLE_NAME).select().where({ uid: userId }).first()
     expect(inDBUser.image).toBeTruthy()
+  })
+
+  it('saves the user image to upload folder and stores filename in user when update has image', async () => {
+    // check from folder
+    const fileInBase64 = readFileAsBase64()
+    const userId = await addUser()
+    const validUpdate = { username: 'user1-updated', image: fileInBase64 }
+    const responseToken = await postAuthentication(credentials)
+    await app.inject({
+      url: '/api/users/' + userId,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: validUpdate,
+    })
+
+    const inDBUser:any = await db(TABLE_NAME).select().where({ uid: userId }).first()
+
+    const profileImagePath = path.join(profileFolder, inDBUser.image)
+    expect(fs.existsSync(profileImagePath)).toBe(true)
   })
 })
