@@ -179,10 +179,14 @@ describe('User Update', () => {
   })
 
   it('returns 200 when image size is exactly 2mb', async () => {
-    const fileWithExceeding2MB = 'a'.repeat((1024 * 1024 * 2) - 1)
-    const base64 = Buffer.from(fileWithExceeding2MB).toString('base64')
+    const testPng = readFileAsBase64()
+    const pngByte = Buffer.from(testPng, 'base64').length
+    const twoMB = 1024 * 1024 * 2
+    const filling = 'a'.repeat(twoMB - pngByte)
+    const fillBase64 = Buffer.from(filling).toString('base64')
+
     const userId = await addUser()
-    const validUpdate = { username: 'user1-updated', image: base64 }
+    const validUpdate = { username: 'user1-updated', image: testPng + fillBase64 }
     const responseToken = await postAuthentication(credentials)
     const response = await app.inject({
       url: '/api/users/' + userId,
@@ -193,5 +197,29 @@ describe('User Update', () => {
       payload: validUpdate,
     })
     expect(response.statusCode).toBe(200)
+  })
+
+  it.each`
+  file              | status
+  ${'test-gif.gif'} | ${413}
+  ${'test-pdf.pdf'} | ${413}
+  ${'test-txt.txt'} | ${413}
+  ${'test-png.png'} | ${200}
+  ${'test-jpg.jpg'} | ${200}
+  `('returns $status when uploading $file as image', async ({ file, status }) => {
+    const fileInBase64 = readFileAsBase64(file)
+    const userId = await addUser()
+    const validUpdate = { username: 'user1-updated', image: fileInBase64 }
+    const responseToken = await postAuthentication(credentials)
+    const response = await app.inject({
+      url: '/api/users/' + userId,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: validUpdate,
+    })
+
+    expect(response.statusCode).toBe(status)
   })
 })

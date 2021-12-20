@@ -102,6 +102,15 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         })
       }
 
+      const supportedType = await FileService.isSupportedFileType(buffer)
+      if (!supportedType) {
+        reply.code(413).send({
+          statusCode: 413,
+          error: 'UNSUPPORTED_IMAGE_FILE_TYPE',
+          message: 'Only JPEG or PNG files are allowed',
+        })
+      }
+
       updatedBody.image = await FileService.saveProfileImage(updatedBody.image)
     }
 
