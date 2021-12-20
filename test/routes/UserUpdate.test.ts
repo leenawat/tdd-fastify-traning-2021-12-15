@@ -54,4 +54,13 @@ describe('User Update', () => {
     })
     expect(response.statusCode).toBe(200)
   })
+
+  it('returns \"Autorization header is missing!\" for unauthorization request', async () => {
+    const response = await app.inject({
+      url: '/api/users/5',
+      method: 'put',
+      payload: validUser,
+    })
+    expect(response.json().message).toBe('Autorization header is missing!')
+  })
 })
