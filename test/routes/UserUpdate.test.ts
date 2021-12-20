@@ -58,6 +58,7 @@ describe('User Update', () => {
 
   it('returns 200 when request with Authorization header', async () => {
     const userId:any = await addUser()
+    const validUpdate = { fname: 'fname1-updated' }
     const responseToken = await postAuthentication(credentials)
     const response = await app.inject({
       url: '/api/users/' + userId,
@@ -65,7 +66,7 @@ describe('User Update', () => {
       headers: {
         Authorization: 'Bearer ' + responseToken.json().token,
       },
-      payload: validUser,
+      payload: { ...validUpdate },
     })
     expect(response.statusCode).toBe(200)
   })
@@ -74,7 +75,7 @@ describe('User Update', () => {
     const response = await app.inject({
       url: '/api/users/5',
       method: 'put',
-      payload: validUser,
+      payload: {},
     })
     expect(response.json().message).toBe('Autorization header is missing!')
   })
@@ -96,7 +97,7 @@ describe('User Update', () => {
 
   it('returns 200 ok when valid update request sent from authorized user', async () => {
     const userId = await addUser()
-    const validUpdate = { username: 'fname1-updated' }
+    const validUpdate = { fname: 'fname1-updated' }
     const responseToken = await postAuthentication(credentials)
     const response = await app.inject({
       url: '/api/users/' + userId,
@@ -125,7 +126,7 @@ describe('User Update', () => {
     // check from db
     const fileInBase64 = readFileAsBase64()
     const userId = await addUser()
-    const validUpdate = { username: 'user1-updated', image: fileInBase64 }
+    const validUpdate = { fname: 'user1-updated', image: fileInBase64 }
     const responseToken = await postAuthentication(credentials)
     await app.inject({
       url: '/api/users/' + userId,
@@ -144,7 +145,7 @@ describe('User Update', () => {
     // check from folder
     const fileInBase64 = readFileAsBase64()
     const userId = await addUser()
-    const validUpdate = { username: 'user1-updated', image: fileInBase64 }
+    const validUpdate = { fname: 'user1-updated', image: fileInBase64 }
     const responseToken = await postAuthentication(credentials)
     await app.inject({
       url: '/api/users/' + userId,
@@ -165,7 +166,7 @@ describe('User Update', () => {
     const fileWithExceeding2MB = 'a'.repeat(1024 * 1024 * 2)
     const base64 = Buffer.from(fileWithExceeding2MB).toString('base64')
     const userId = await addUser()
-    const validUpdate = { username: 'user1-updated', image: base64 }
+    const validUpdate = { fname: 'user1-updated', image: base64 }
     const responseToken = await postAuthentication(credentials)
     const response = await app.inject({
       url: '/api/users/' + userId,
@@ -186,7 +187,7 @@ describe('User Update', () => {
     const fillBase64 = Buffer.from(filling).toString('base64')
 
     const userId = await addUser()
-    const validUpdate = { username: 'user1-updated', image: testPng + fillBase64 }
+    const validUpdate = { fname: 'user1-updated', image: testPng + fillBase64 }
     const responseToken = await postAuthentication(credentials)
     const response = await app.inject({
       url: '/api/users/' + userId,
@@ -209,7 +210,7 @@ describe('User Update', () => {
   `('returns $status when uploading $file as image', async ({ file, status }) => {
     const fileInBase64 = readFileAsBase64(file)
     const userId = await addUser()
-    const validUpdate = { username: 'user1-updated', image: fileInBase64 }
+    const validUpdate = { fname: 'user1-updated', image: fileInBase64 }
     const responseToken = await postAuthentication(credentials)
     const response = await app.inject({
       url: '/api/users/' + userId,
@@ -221,5 +222,47 @@ describe('User Update', () => {
     })
 
     expect(response.statusCode).toBe(status)
+  })
+
+  it('ต้อง return 403 ถ้าใน request body มี uid', async () => {
+    const userId = await addUser()
+    const responseToken = await postAuthentication(credentials)
+    const response = await app.inject({
+      url: '/api/users/' + userId,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: { uid: 1 },
+    })
+    expect(response.statusCode).toBe(403)
+  })
+
+  it('ต้อง return 403 ถ้าใน request body มี inactive', async () => {
+    const userId = await addUser()
+    const responseToken = await postAuthentication(credentials)
+    const response = await app.inject({
+      url: '/api/users/' + userId,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: { username: 'user1' },
+    })
+    expect(response.statusCode).toBe(403)
+  })
+
+  it('ต้อง return 403 ถ้าใน request body มี username', async () => {
+    const userId = await addUser()
+    const responseToken = await postAuthentication(credentials)
+    const response = await app.inject({
+      url: '/api/users/' + userId,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseToken.json().token,
+      },
+      payload: { inactive: 1 },
+    })
+    expect(response.statusCode).toBe(403)
   })
 })

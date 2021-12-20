@@ -114,6 +114,15 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       updatedBody.image = await FileService.saveProfileImage(updatedBody.image)
     }
 
+    if (Object.keys(updatedBody).includes('uid') ||
+    Object.keys(updatedBody).includes('username') ||
+    Object.keys(updatedBody).includes('inactive')) {
+      reply.code(403).send({
+        statusCode: 403,
+        message: 'ไม่อนุญาตให้แก้ไข id, username หรือ inactive',
+      })
+    }
+
     const result = await userModel.update(params.id, updatedBody)
     reply.code(200).send(result)
   })
