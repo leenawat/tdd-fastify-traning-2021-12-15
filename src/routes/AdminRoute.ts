@@ -30,6 +30,10 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     preHandler: [fastify.guard.role(['admin'])],
   },
   async function (request, reply) {
+    const params:any = request.params
+    const userId = params.id
+    const roleId = params.roleId
+    await userModel.deleteUserRoles({ user_id: userId, role_id: roleId })
     reply.send()
   })
 }

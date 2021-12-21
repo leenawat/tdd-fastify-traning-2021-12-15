@@ -78,6 +78,11 @@ export default class UserModel {
     return result
   }
 
+  async deleteUserRoles(userRole: any) {
+    const result = await this.db('sys_user_role').where(userRole).delete()
+    return result
+  }
+
   async delete(uid) {
     try {
       const result = await this.db(this.TABLE_NAME)

@@ -309,4 +309,34 @@ describe('Admin Update User', () => {
     // Assert
     expect(response.statusCode).toBe(200)
   })
+
+  it('user_role ใน db หายไป เมื่อ request ลบ user_role โดยที่ user มี role admin', async () => {
+    // Arrange
+
+    const adminId = await addUser(adminUser)
+    const userId = await addUser(activeUser)
+    await addRole([roleAdmin, roleUser])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: adminId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    await addUserRole([{ user_id: userId[0], role_id: 1 }])
+    const responseJwt = await postAuthentication(adminCredentials)
+
+    // Act
+    await app.inject({
+      url: `/api/admin/users/${userId[0]}/roles/1`,
+      method: 'delete',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+    })
+
+    // Assert
+    const resultSet = await db(SYS_USER_ROLE).select().where({ user_id: userId[0] })
+    expect(resultSet.length).toBe(0)
+  })
 })
