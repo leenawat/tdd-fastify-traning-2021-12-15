@@ -126,6 +126,12 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     const result = await userModel.update(params.id, updatedBody)
     reply.code(200).send(result)
   })
+
+  fastify.delete('/api/users/:uid',
+    { preValidation: [fastify.authenticate] },
+    async (request, reply) => {
+      reply.send()
+    })
 }
 
 export default user
