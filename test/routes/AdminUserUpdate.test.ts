@@ -169,4 +169,30 @@ describe('Admin Update User', () => {
     const user:any = await db(SYS_USER).select().where({ uid: userId[0] }).first()
     expect(user.inactive).toBe(1)
   })
+
+  it('return 403 เมื่อ เพิ่ม user_role โดยที่ user ไม่มี role admin', async () => {
+    // Arrange
+    const userId = await addUser(activeUser)
+    await addRole([roleUser])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: userId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(adminCredentials)
+
+    // Act
+    const response = await app.inject({
+      url: `/api/admin/users/${userId[0]}/roles`,
+      method: 'post',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+    })
+
+    // Assert
+    expect(response.statusCode).toBe(403)
+  })
 })

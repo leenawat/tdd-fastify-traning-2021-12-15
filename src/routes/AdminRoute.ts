@@ -12,6 +12,14 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     const rss = await userModel.update(params.id, { inactive: 1 })
     return reply.send(rss)
   })
+
+  fastify.post('/api/admin/users/:id/roles', {
+    preValidation: [fastify.authenticate],
+    preHandler: [fastify.guard.role(['admin'])],
+  },
+  async function (request, reply) {
+    reply.send()
+  })
 }
 
 export default adminRoute
