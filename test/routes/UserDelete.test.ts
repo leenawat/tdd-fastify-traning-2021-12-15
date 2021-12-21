@@ -8,7 +8,7 @@ describe('User Delete', () => {
       url: `/api/users/1`,
       method: 'delete',
     })
-    expect(response.statusCode).toBe(403)
+    expect(response.statusCode).toBe(401)
   })
 })
 
