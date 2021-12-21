@@ -220,7 +220,7 @@ describe('Admin Update User', () => {
       headers: {
         Authorization: 'Bearer ' + responseJwt.json().token,
       },
-      payload: [{ user_id: userId[0], role_id: 1 }],
+      payload: [1],
     })
 
     // Assert
@@ -249,7 +249,7 @@ describe('Admin Update User', () => {
       headers: {
         Authorization: 'Bearer ' + responseJwt.json().token,
       },
-      payload: [{ user_id: userId[0], role_id: 1 }],
+      payload: [1],
     })
 
     // Assert

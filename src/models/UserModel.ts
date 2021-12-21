@@ -68,8 +68,13 @@ export default class UserModel {
     return result
   }
 
-  async insertUserRoles(userRoles: any[]) {
-    const result = await this.db('sys_user_role').insert(userRoles)
+  async insertUserRoles(userId, userRoles: any[]) {
+    const userRolesForInsert = userRoles.map(roleId => {
+      return {
+        user_id: userId, role_id: roleId,
+      }
+    })
+    const result = await this.db('sys_user_role').insert(userRolesForInsert)
     return result
   }
 
