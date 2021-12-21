@@ -9,6 +9,17 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.post('/api/users', {
     schema: {
       tags: ['user'],
+      body: {
+        type: 'object',
+        require: ['username', 'password', 'prename', 'fname', 'lname'],
+        properties: {
+          username: { type: 'string' },
+          password: { type: 'string' },
+          prename: { type: 'string' },
+          fname: { type: 'string' },
+          lname: { type: 'string' },
+        },
+      },
     },
   }, async function (request, reply) {
     const data: any = request.body
