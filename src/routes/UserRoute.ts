@@ -133,7 +133,9 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       preHandler: [fastify.guard.role(['admin'])],
     },
     async (request, reply) => {
-      reply.send()
+      const params:any = request.params
+      const result = await userModel.delete(params.uid)
+      reply.send(result)
     })
 }
 

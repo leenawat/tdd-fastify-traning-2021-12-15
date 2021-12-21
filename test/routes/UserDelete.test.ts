@@ -32,8 +32,9 @@ const roleUser = { name: 'user' }
 const roleAdmin = { name: 'admin' }
 
 const addUser = async (user = { ...activeUser }) => {
-  user.password = await bcrypt.hashSync(user.password)
-  return await db(SYS_USER).insert(user)
+  return await db(SYS_USER).insert({
+    ...user,
+    password: await bcrypt.hashSync(user.password) })
 }
 
 const addRole = async (roles: any[]) => {
@@ -120,6 +121,34 @@ describe('User Delete', () => {
 
     // Assert
     expect(response.statusCode).toBe(200)
+  })
+
+  it('user in database deleted when request delete success', async () => {
+    // Arrange
+    const adminId = await addUser(adminUser)
+    const userId = await addUser({ ...activeUser, fname: 'user-for-delete' })
+    await addRole([roleUser, roleAdmin])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: adminId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(adminCredentials)
+
+    // Act
+    await app.inject({
+      url: `/api/users/${userId[0]}`,
+      method: 'delete',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+    })
+
+    // Assert
+    const result = await db(SYS_USER).select().where({ uid: userId[0] })
+    expect(result.length).toBe(0)
   })
 })
 

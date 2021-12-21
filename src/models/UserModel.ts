@@ -67,4 +67,19 @@ export default class UserModel {
       .select()
     return result
   }
+
+  async delete(uid) {
+    try {
+      const result = await this.db(this.TABLE_NAME)
+        .where({ uid })
+        .del()
+      return result
+    } catch (err: any) {
+      if (Object.keys(err).includes('sql')) {
+        return { err: 'SQL error' }
+      } else {
+        return { err }
+      }
+    }
+  }
 }
