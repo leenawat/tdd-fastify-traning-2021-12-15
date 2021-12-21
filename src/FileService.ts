@@ -4,7 +4,6 @@ import fs from 'fs'
 import FileType from 'file-type'
 
 const config = require('config')
-
 const { uploadDir, profileDir } = config
 const profileFolder = path.join('.', uploadDir, profileDir)
 

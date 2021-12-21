@@ -1,10 +1,9 @@
 import fastify from 'fastify'
 import fp from 'fastify-plugin'
 import App from './app'
-import config from 'config'
+const config = require('config')
 
-const port: any = config.get('server-port')
-const myEnv: any = config.get('my-env')
+const { serverPort: port, myEnv } = config
 
 const start = async () => {
   // eslint-disable-next-line no-console

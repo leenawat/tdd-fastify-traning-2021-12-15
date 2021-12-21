@@ -1,9 +1,9 @@
 import fp from 'fastify-plugin'
 import { FastifyRequest, FastifyReply } from 'fastify'
 import FastifyJwt from 'fastify-jwt'
-import config from 'config'
 
-const jwtConfig: any = config.get('jwt')
+const config = require('config')
+const { jwt: jwtConfig } = config
 
 export default fp(async (fastify: any, opts: any) => {
   // https://github.com/fastify/fastify-jwt#example-2
