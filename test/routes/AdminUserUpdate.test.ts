@@ -34,8 +34,10 @@ const roleUser = { name: 'user' }
 const roleAdmin = { name: 'admin' }
 
 const addUser = async (user = { ...activeUser }) => {
-  user.password = await bcrypt.hashSync(user.password)
-  return await db(SYS_USER).insert(user)
+  return await db(SYS_USER).insert({
+    ...user,
+    password: await bcrypt.hashSync(user.password),
+  })
 }
 
 const addRole = async (roles: any[]) => {
@@ -181,7 +183,7 @@ describe('Admin Update User', () => {
       }
     })
     await addUserRole(userRoles)
-    const responseJwt = await postAuthentication(adminCredentials)
+    const responseJwt = await postAuthentication(credentials)
 
     // Act
     const response = await app.inject({
