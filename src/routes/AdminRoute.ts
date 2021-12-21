@@ -5,6 +5,7 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   const userModel = new UserModel(fastify.db)
   fastify.put('/api/admin/users/:id/inactive/:inactive', {
     schema: {
+      security: [{ bearer: [] }],
       tags: ['admin'],
     },
     preValidation: [fastify.authenticate],
@@ -18,6 +19,7 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.post('/api/admin/users/:id/roles', {
     schema: {
+      security: [{ bearer: [] }],
       tags: ['admin'],
     },
     preValidation: [fastify.authenticate],
@@ -33,6 +35,7 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.delete('/api/admin/users/:id/roles/:roleId', {
     schema: {
+      security: [{ bearer: [] }],
       tags: ['admin'],
     },
     preValidation: [fastify.authenticate],

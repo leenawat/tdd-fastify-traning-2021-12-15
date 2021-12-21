@@ -38,6 +38,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.get('/api/users', {
     schema: {
+      security: [{ bearer: [] }],
       tags: ['user'],
       querystring: {
         type: 'object',
@@ -70,6 +71,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.get('/api/users/:id', {
     schema: {
+      security: [{ bearer: [] }],
       tags: ['user'],
     },
   }, async (request, reply) => {
@@ -84,6 +86,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.put('/api/users/:id', {
     schema: {
+      security: [{ bearer: [] }],
       tags: ['user'],
       params: {
         type: 'object',
@@ -140,6 +143,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.delete('/api/users/:uid',
     {
       schema: {
+        security: [{ bearer: [] }],
         tags: ['user'],
       },
       preValidation: [fastify.authenticate],
