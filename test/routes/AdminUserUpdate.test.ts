@@ -100,4 +100,31 @@ describe('Admin Update User', () => {
     // Assert
     expect(response.statusCode).toBe(200)
   })
+
+  it('return 200 เมื่อ change inactive โดย user มีทั้งสอง role(user, admin)', async () => {
+    // Arrange
+    const userId = await addUser()
+    await addRole([roleAdmin, roleUser])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: userId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(credentials)
+
+    // Act
+    const response = await app.inject({
+      url: `/api/admin/users/${userId}/inactive/1`,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+      payload: {},
+    })
+
+    // Assert
+    expect(response.statusCode).toBe(200)
+  })
 })
