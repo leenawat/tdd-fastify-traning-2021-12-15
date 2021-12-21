@@ -6,6 +6,7 @@ declare module 'fastify' {
     interface FastifyInstance {
         db: Knex;
         authenticate: any;
+        guard: any;
     }
 
     interface FastifyRequest {
