@@ -128,7 +128,10 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   })
 
   fastify.delete('/api/users/:uid',
-    { preValidation: [fastify.authenticate] },
+    {
+      preValidation: [fastify.authenticate],
+      preHandler: [fastify.guard.role(['admin'])],
+    },
     async (request, reply) => {
       reply.send()
     })
