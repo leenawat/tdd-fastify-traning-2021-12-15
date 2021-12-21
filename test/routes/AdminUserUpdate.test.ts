@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 // import jwt from 'jsonwebtoken'
 
 const app = build()
-const TABLE_NAME = 'sys_user'
+const SYS_USER = 'sys_user'
 const SYS_USER_ROLE = 'sys_user_role'
 const SYS_ROLE = 'sys_role'
 const credentials = { username: 'leenawat', password: 'P4ssword' }
@@ -16,12 +16,26 @@ const activeUser = {
   'lname': 'Papahom',
   'inactive': 0,
 }
+
+const adminUser = {
+  'username': 'admin',
+  'password': 'P4ssword',
+  'prename': '1',
+  'fname': 'admin',
+  'lname': 'admin',
+  'inactive': 0,
+}
+const adminCredentials = {
+  username: adminUser.username,
+  password: adminUser.password,
+}
+
 const roleUser = { name: 'user' }
 const roleAdmin = { name: 'admin' }
 
 const addUser = async (user = { ...activeUser }) => {
   user.password = await bcrypt.hashSync(user.password)
-  return await db(TABLE_NAME).insert(user)
+  return await db(SYS_USER).insert(user)
 }
 
 const addRole = async (roles: any[]) => {
@@ -42,7 +56,7 @@ const postAuthentication = async (credentials) => {
 
 describe('Admin Update User', () => {
   beforeEach(async () => {
-    await db(TABLE_NAME).truncate()
+    await db(SYS_USER).truncate()
     await db(SYS_ROLE).truncate()
     await db(SYS_USER_ROLE).truncate()
   })
@@ -126,5 +140,33 @@ describe('Admin Update User', () => {
 
     // Assert
     expect(response.statusCode).toBe(200)
+  })
+
+  it('ค่า inactive ใน database ถูกเปลี่ยนเมื่อ request ถูกต้อง', async () => {
+    // Arrange
+    const adminId = await addUser(adminUser)
+    const userId = await addUser(activeUser)
+    await addRole([roleAdmin, roleUser])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: adminId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(adminCredentials)
+
+    // Act
+    await app.inject({
+      url: `/api/admin/users/${userId[0]}/inactive/1`,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+    })
+
+    // Assert
+    const user:any = await db(SYS_USER).select().where({ uid: userId[0] }).first()
+    expect(user.inactive).toBe(1)
   })
 })
