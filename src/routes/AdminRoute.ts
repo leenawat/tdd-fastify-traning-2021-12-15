@@ -24,6 +24,14 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     await userModel.insertUserRoles(userId, userRoles)
     reply.send()
   })
+
+  fastify.delete('/api/admin/users/:id/roles/:roleId', {
+    preValidation: [fastify.authenticate],
+    preHandler: [fastify.guard.role(['admin'])],
+  },
+  async function (request, reply) {
+    reply.send()
+  })
 }
 
 export default adminRoute

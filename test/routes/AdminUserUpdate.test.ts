@@ -256,4 +256,57 @@ describe('Admin Update User', () => {
     const resultSet = await db(SYS_USER_ROLE).select().where({ user_id: userId[0] })
     expect(resultSet.length).toBe(1)
   })
+
+  it('return 403 เมื่อ ลบ user_role โดยที่ user ไม่มี role admin', async () => {
+    // Arrange
+    const userId = await addUser(activeUser)
+    await addRole([roleUser])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: userId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(credentials)
+
+    // Act
+    const response = await app.inject({
+      url: `/api/admin/users/${userId[0]}/roles/1`,
+      method: 'delete',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+    })
+
+    // Assert
+    expect(response.statusCode).toBe(403)
+  })
+
+  it('return 200 เมื่อ ลบ user_role โดยที่ user มี role admin', async () => {
+    // Arrange
+    const adminId = await addUser(adminUser)
+    const userId = await addUser(activeUser)
+    await addRole([roleAdmin, roleUser])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: adminId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(adminCredentials)
+
+    // Act
+    const response = await app.inject({
+      url: `/api/admin/users/${userId[0]}/roles/1`,
+      method: 'delete',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+    })
+
+    // Assert
+    expect(response.statusCode).toBe(200)
+  })
 })
