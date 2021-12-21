@@ -17,6 +17,7 @@ const activeUser = {
   'inactive': 0,
 }
 const roleUser = { name: 'user' }
+const roleAdmin = { name: 'admin' }
 
 const addUser = async (user = { ...activeUser }) => {
   user.password = await bcrypt.hashSync(user.password)
@@ -71,5 +72,32 @@ describe('Admin Update User', () => {
 
     // Assert
     expect(response.statusCode).toBe(403)
+  })
+
+  it('return 200 when change inactive from valid role', async () => {
+    // Arrange
+    const userId = await addUser()
+    await addRole([roleAdmin])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: userId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(credentials)
+
+    // Act
+    const response = await app.inject({
+      url: `/api/admin/users/${userId}/inactive/1`,
+      method: 'put',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+      payload: {},
+    })
+
+    // Assert
+    expect(response.statusCode).toBe(200)
   })
 })
