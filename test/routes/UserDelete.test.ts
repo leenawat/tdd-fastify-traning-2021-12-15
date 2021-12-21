@@ -15,7 +15,21 @@ const activeUser = {
   'inactive': 0,
 }
 
+const adminUser = {
+  'username': 'admin',
+  'password': 'P4ssword',
+  'prename': '1',
+  'fname': 'admin',
+  'lname': 'admin',
+  'inactive': 0,
+}
+const adminCredentials = {
+  username: adminUser.username,
+  password: adminUser.password,
+}
+
 const roleUser = { name: 'user' }
+const roleAdmin = { name: 'admin' }
 
 const addUser = async (user = { ...activeUser }) => {
   user.password = await bcrypt.hashSync(user.password)
@@ -79,6 +93,33 @@ describe('User Delete', () => {
 
     // Assert
     expect(response.statusCode).toBe(403)
+  })
+
+  it('return 200 เมื่อ request จาก user ที่มี role admin', async () => {
+    // Arrange
+    const adminId = await addUser(adminUser)
+    const userId = await addUser(activeUser)
+    await addRole([roleUser, roleAdmin])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: adminId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(adminCredentials)
+
+    // Act
+    const response = await app.inject({
+      url: `/api/users/${userId[0]}`,
+      method: 'delete',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+    })
+
+    // Assert
+    expect(response.statusCode).toBe(200)
   })
 })
 
