@@ -6,7 +6,11 @@ import FileService from '../FileService'
 const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   const userModel = new UserModel(fastify.db)
 
-  fastify.post('/api/users', async function (request, reply) {
+  fastify.post('/api/users', {
+    schema: {
+      tags: ['user'],
+    },
+  }, async function (request, reply) {
     const data: any = request.body
     data.password = await bcrypt.hashSync(data.password)
     data.inactive = 1
@@ -34,6 +38,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.get('/api/users', {
     schema: {
+      tags: ['user'],
       querystring: {
         type: 'object',
         properties: {
@@ -63,7 +68,11 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     return userPage
   })
 
-  fastify.get('/api/users/:id', async (request, reply) => {
+  fastify.get('/api/users/:id', {
+    schema: {
+      tags: ['user'],
+    },
+  }, async (request, reply) => {
     const params: any = request.params
     const user = await userModel.findById(params.id)
     if (!user) {
@@ -75,6 +84,7 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.put('/api/users/:id', {
     schema: {
+      tags: ['user'],
       params: {
         type: 'object',
         require: ['id'],
@@ -129,6 +139,9 @@ const user: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.delete('/api/users/:uid',
     {
+      schema: {
+        tags: ['user'],
+      },
       preValidation: [fastify.authenticate],
       preHandler: [fastify.guard.role(['admin'])],
     },

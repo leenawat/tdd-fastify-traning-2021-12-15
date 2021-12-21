@@ -7,6 +7,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
   fastify.post('/api/auth', {
     schema: {
+      tags: ['auth'],
       body: {
         type: 'object',
         required: ['username', 'password'],

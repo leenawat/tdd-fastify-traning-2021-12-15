@@ -4,6 +4,9 @@ import UserModel from '../models/UserModel'
 const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   const userModel = new UserModel(fastify.db)
   fastify.put('/api/admin/users/:id/inactive/:inactive', {
+    schema: {
+      tags: ['admin'],
+    },
     preValidation: [fastify.authenticate],
     preHandler: [fastify.guard.role(['admin'])],
   },
@@ -14,6 +17,9 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   })
 
   fastify.post('/api/admin/users/:id/roles', {
+    schema: {
+      tags: ['admin'],
+    },
     preValidation: [fastify.authenticate],
     preHandler: [fastify.guard.role(['admin'])],
   },
@@ -26,6 +32,9 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   })
 
   fastify.delete('/api/admin/users/:id/roles/:roleId', {
+    schema: {
+      tags: ['admin'],
+    },
     preValidation: [fastify.authenticate],
     preHandler: [fastify.guard.role(['admin'])],
   },
