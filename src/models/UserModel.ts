@@ -68,6 +68,11 @@ export default class UserModel {
     return result
   }
 
+  async insertUserRoles(userRoles: any[]) {
+    const result = await this.db('sys_user_role').insert(userRoles)
+    return result
+  }
+
   async delete(uid) {
     try {
       const result = await this.db(this.TABLE_NAME)

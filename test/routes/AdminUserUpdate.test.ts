@@ -220,9 +220,40 @@ describe('Admin Update User', () => {
       headers: {
         Authorization: 'Bearer ' + responseJwt.json().token,
       },
+      payload: [{ user_id: userId[0], role_id: 1 }],
     })
 
     // Assert
     expect(response.statusCode).toBe(200)
+  })
+
+  it('user_role ใน db เพิ่ม เมื่อ request เพิ่ม user_role โดยที่ user มี role admin', async () => {
+    // Arrange
+
+    const adminId = await addUser(adminUser)
+    const userId = await addUser(activeUser)
+    await addRole([roleAdmin, roleUser])
+    const rolesInDb = await db(SYS_ROLE).select()
+    const userRoles = rolesInDb.map(role => {
+      return {
+        user_id: adminId[0], role_id: role.id,
+      }
+    })
+    await addUserRole(userRoles)
+    const responseJwt = await postAuthentication(adminCredentials)
+
+    // Act
+    await app.inject({
+      url: `/api/admin/users/${userId[0]}/roles`,
+      method: 'post',
+      headers: {
+        Authorization: 'Bearer ' + responseJwt.json().token,
+      },
+      payload: [{ user_id: userId[0], role_id: 1 }],
+    })
+
+    // Assert
+    const resultSet = await db(SYS_USER_ROLE).select().where({ user_id: userId[0] })
+    expect(resultSet.length).toBe(1)
   })
 })

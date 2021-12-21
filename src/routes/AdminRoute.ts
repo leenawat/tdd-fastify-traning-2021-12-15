@@ -18,6 +18,8 @@ const adminRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     preHandler: [fastify.guard.role(['admin'])],
   },
   async function (request, reply) {
+    const userRoles: any = request.body
+    await userModel.insertUserRoles(userRoles)
     reply.send()
   })
 }
