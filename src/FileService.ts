@@ -5,8 +5,7 @@ import FileType from 'file-type'
 
 const config = require('config')
 
-const uploadDir = config.get('upload-dir')
-const profileDir = config.get('profile-dir')
+const { uploadDir, profileDir } = config
 const profileFolder = path.join('.', uploadDir, profileDir)
 
 const createFolders = () => {
